@@ -1,4 +1,4 @@
-# gt-scraper-cleaner-app
+# gtmv-web-app-vue
 
 ## Project setup
 ```

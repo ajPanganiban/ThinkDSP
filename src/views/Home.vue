@@ -2,9 +2,6 @@
   <div>
     <p>Try out stuff here.</p>
   </div>
-  <div class="home">
-    <HelloWorld msg="Welcome to your Vue app."/>
-  </div>
   <br> <br> <br>
   <div>
     <h3 style="margin-left: 60px">Data Scraper Parameters</h3> <br> <br>
@@ -310,14 +307,9 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
 
 export default {
   name: 'Home',
-  components: {
-    HelloWorld
-  },
   data () {
     return {
       value: null,

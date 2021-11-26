@@ -14,6 +14,9 @@ import Splitter from 'primevue/splitter'
 import SplitterPanel from 'primevue/splitterpanel'
 import TabMenu from 'primevue/tabmenu'
 import Checkbox from 'primevue/checkbox'
+import Fieldset from 'primevue/fieldset'
+import Accordion from 'primevue/accordion'
+import AccordionTab from 'primevue/accordiontab'
 
 import 'primevue/resources/themes/saga-blue/theme.css'
 import 'primevue/resources/primevue.min.css'
@@ -36,5 +39,8 @@ app.component('Splitter', Splitter)
 app.component('SplitterPanel', SplitterPanel)
 app.component('TabMenu', TabMenu)
 app.component('Checkbox', Checkbox)
+app.component('Fieldset', Fieldset)
+app.component('Accordion', Accordion)
+app.component('AccordionTab', AccordionTab)
 
 app.mount('#app')

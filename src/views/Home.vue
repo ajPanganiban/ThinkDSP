@@ -163,20 +163,17 @@
                       <div style="text-align:center">
                         <b> Minimum </b>  &emsp;&emsp;&emsp;&emsp;&emsp; &emsp;&emsp;&emsp;
                         <b> Maximum </b> <br> <br>
+                        <b> Mileage: </b> &emsp;
+                        <InputNumber v-model="minMileage" suffix=" km" /> &emsp;
+                        <InputNumber v-model="maxMileage" suffix=" km" /> <br> <br>
+                        <b> Price: </b> &emsp;&emsp;&nbsp;
+                        <InputNumber v-model="minPrice" suffix=" Php" /> &emsp;
+                        <InputNumber v-model="maxPrice" suffix=" Php" /> <br> <br>
+                        <b> Engine Size: </b>
+                        <InputNumber v-model="minPrice"/> &emsp;
+                        <InputNumber v-model="maxPrice"/>
+                        <br>
                       </div>
-                      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                      <b> Mileage: </b> &emsp;&emsp;&emsp;&emsp;&emsp; &emsp;&emsp;
-                      <InputNumber v-model="minMileage" suffix=" km" /> &emsp;
-                      <InputNumber v-model="maxMileage" suffix=" km" /> <br> <br>
-                      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                      <b> Price: </b> &emsp;&emsp;&emsp;&emsp;&emsp; &emsp;&emsp; &emsp;
-                      <InputNumber v-model="minPrice" suffix=" Php" /> &emsp;
-                      <InputNumber v-model="maxPrice" suffix=" Php" /> <br> <br>
-                      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
-                      <b> Engine Size: </b> &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;
-                      <InputNumber v-model="minPrice"/> &emsp;
-                      <InputNumber v-model="maxPrice"/>
-                      <br>
                     </template>
                     <template #footer>
                       <div style="text-align: right">

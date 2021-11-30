@@ -1,7 +1,7 @@
 <template>
   <Fieldset>
     <template #legend>
-      Fetch Data
+      Download Data
     </template>
     <div class="row">
       <div class="column">
@@ -11,10 +11,11 @@
                 Cleaned Listings
               </template>
             <template #content>
-                <b>Last Cleaning Date: November 1, 2021</b>
-                <br>
-                Automart: 20/40 listings valid (50%) <br>
-                Facebook: 20/60 listings valid (33%) <br>
+                <b>Last Scraped Date: November 1, 2021</b>
+                <br> <br>
+                Accepted Listings: <br>
+                Automart: 20/40 listings (50%) <br>
+                Facebook: 20/60 listings (33%) <br>
                 <b>Overall: 40/100  (40%) </b>
             </template>
             <template #footer>
@@ -30,7 +31,7 @@
               Scraped Listings
             </template>
             <template #content>
-                Scrape Date &nbsp; <Calendar v-model="value"/> <br> <br>
+                Date &nbsp; <Calendar v-model="value"/> <br> <br>
                 Websites &nbsp;&nbsp;&nbsp;&nbsp; <MultiSelect v-model="selectedSites" :options="sites" optionLabel="name" placeholder="Select Sites" />
             </template>
             <template #footer>
@@ -111,11 +112,11 @@
           </div>
         </div>
       </AccordionTab>
-      <AccordionTab header="Masterfile">
+      <AccordionTab header="Cleaner Reference">
         <Card style="text-align:justify">
           <template #content>
             <p style="margin-left: 30px;font-style:italic;">
-              The masterfile is referenced in the cleaning phase.
+              The reference will be used in the cleaning phase.
               All values in each column of the masterfile will be considered valid. <br>
               Download the current masterfile or upload a new one.
             </p>

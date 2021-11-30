@@ -148,6 +148,13 @@
                         optionLabel="name"
                         placeholder="Select Fields" />
                     </template>
+                    <template #footer>
+                      <div style="text-align: right">
+                        <Button label="Save Settings"
+                          class="p-button-secondary"
+                          style="width:30%"/>
+                      </div>
+                    </template>
                   </Card>
                   <br> <br>
                   <Card style="text-align:justify">
@@ -169,6 +176,14 @@
                       <b> Engine Size: </b> &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;
                       <InputNumber v-model="minPrice"/> &emsp;
                       <InputNumber v-model="maxPrice"/>
+                      <br>
+                    </template>
+                    <template #footer>
+                      <div style="text-align: right">
+                        <Button label="Save Settings"
+                          class="p-button-secondary"
+                          style="width:30%"/>
+                      </div>
                     </template>
                   </Card>
                   <br> <br>
@@ -363,6 +378,13 @@
                           </td>
                         </tr>
                       </table>
+                    </template>
+                    <template #footer>
+                      <div style="text-align: right">
+                        <Button label="Save Settings"
+                          class="p-button-secondary"
+                          style="width:30%"/>
+                      </div>
                     </template>
                   </Card>
                 </div>

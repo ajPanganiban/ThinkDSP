@@ -2,11 +2,7 @@
   <div>
     <p>This is the Data page.</p>
   </div>
-  <div class="home">
-    <HelloWorld msg="Welcome to your Vue app."/>
-  </div>
   <br> <br>
-    <!-- <div class="col-md-6 offset-md-1"> -->
     <div class="col-md-10 offset-md-1">
       <h3> Latest Data </h3>
       <Card style="text-align:justify">

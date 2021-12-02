@@ -50,7 +50,7 @@ export default {
             (res.json())
               .then(json => { this.token = json.token })
               .then(this.loginError = null)
-              .then(this.$router.push('/'))
+              .then(this.$router.push('/admin'))
           }
         })
     }

@@ -26,11 +26,13 @@ export default {
     return {
       email: '',
       password: '',
-      token: '',
       loginError: null
     }
   },
   methods: {
+    setToken (tokenData) {
+      return localStorage.setItem('token', tokenData)
+    },
     handleLogin (email, password) {
       return fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/login', {
         method: 'post',
@@ -48,7 +50,7 @@ export default {
             this.loginError = 'error'
           } else {
             (res.json())
-              .then(json => { this.token = json.token })
+              .then(json => { this.setToken(json.token) })
               .then(this.loginError = null)
               .then(this.$router.push('/admin'))
           }

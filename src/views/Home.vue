@@ -391,7 +391,7 @@
       </AccordionTab>
     </Accordion>
   </Fieldset>
-  <br> <br>
+  <br>
 </template>
 
 <script>
@@ -465,6 +465,11 @@ export default {
       ],
       selectedRequiredFields: null,
       checked: []
+    }
+  },
+  methods: {
+    getToken () {
+      return localStorage.getItem('token')
     }
   }
 }

@@ -49,8 +49,8 @@ export default {
           } else {
             (res.json())
               .then(json => { this.token = json.token })
-              .then(console.log(this.token))
               .then(this.loginError = null)
+              .then(this.$router.push('/'))
           }
         })
     }

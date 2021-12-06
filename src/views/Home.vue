@@ -127,7 +127,12 @@
           </template>
           <template #footer>
             <div style="text-align:center">
-              <Button icon="pi pi-download"
+              <Button
+                @click.prevent="downloadData(
+                  'masterfile?file=True',
+                  'cleaner_reference'
+                )"
+                icon="pi pi-download"
                 label="Download"
                 class="p-button-lg"
                 style="width:30%"/>

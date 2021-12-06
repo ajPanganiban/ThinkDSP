@@ -21,7 +21,7 @@
             </template>
             <template #footer>
                 <Button
-                  @click.prevent="downloadLatestData()"
+                  @click.prevent="downloadData('latest_data', 'latest_data')"
                   icon="pi pi-download"
                   label="Download All Data" />
             </template>
@@ -476,17 +476,27 @@ export default {
       console.log(localStorage.getItem('token'))
       return localStorage.getItem('token')
     },
-    downloadLatestData () {
+    downloadData (prefix, filename) {
       const headers = new Headers()
       headers.append('Content-Type', 'application/json')
       headers.append('Accept', 'application/json')
       headers.append('Authorization', 'Bearer ' + this.getToken())
-      return fetch('http://127.0.0.1:8000/latest_data?link=true', {
+      return fetch('http://127.0.0.1:8000/' + prefix, {
         method: 'GET',
         responseType: 'blob',
         headers: headers
       })
-        .then(res => console.log(res))
+        .then(response => response.blob())
+        .then(blob => {
+          var fileURL = window.URL.createObjectURL(blob)
+          var fileLink = document.createElement('a')
+
+          fileLink.href = fileURL
+          fileLink.setAttribute('download', filename + '.csv')
+          document.body.appendChild(fileLink)
+
+          fileLink.click()
+        })
         .catch(console.error)
     }
   }

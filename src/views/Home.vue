@@ -1,4 +1,5 @@
 <template>
+  <Button @click="getToken()" />
   <Fieldset>
     <template #legend>
       Download Data
@@ -19,7 +20,10 @@
                 <b>Overall: 40/100  (40%) </b>
             </template>
             <template #footer>
-                <Button icon="pi pi-download" label="Download All Data" />
+                <Button
+                  @click.prevent="downloadLatestData()"
+                  icon="pi pi-download"
+                  label="Download All Data" />
             </template>
           </Card>
         </div>
@@ -469,7 +473,21 @@ export default {
   },
   methods: {
     getToken () {
+      console.log(localStorage.getItem('token'))
       return localStorage.getItem('token')
+    },
+    downloadLatestData () {
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      headers.append('Accept', 'application/json')
+      headers.append('Authorization', 'Bearer ' + this.getToken())
+      return fetch('http://127.0.0.1:8000/latest_data?link=true', {
+        method: 'GET',
+        responseType: 'blob',
+        headers: headers
+      })
+        .then(res => console.log(res))
+        .catch(console.error)
     }
   }
 }

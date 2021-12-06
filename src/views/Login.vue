@@ -34,12 +34,12 @@ export default {
       return localStorage.setItem('token', tokenData)
     },
     handleLogin (email, password) {
+      const headers = new Headers()
+      headers.append('Accept', 'application/json')
+      headers.append('Content-Type', 'application/json')
       return fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/login', {
         method: 'post',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
+        headers: headers,
         body: JSON.stringify({
           email: email,
           password: password

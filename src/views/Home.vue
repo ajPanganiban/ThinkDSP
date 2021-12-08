@@ -201,10 +201,20 @@
                     </template>
                     <template #footer>
                       <div style="text-align: right">
-                        <Button label="Save Settings"
+                        <Button
+                          @click.prevent="editRequiredFields(this.selectedRequiredFields)"
+                          label="Save Settings"
                           class="p-button-secondary"
                           style="width:30%"/>
                       </div>
+                      <Message
+                        v-if="requiredFieldStatus"
+                        severity="success"
+                        :life="5000"
+                        :sticky="false
+                      ">
+                        Settings successfully saved.
+                      </Message>
                     </template>
                   </Card>
                   <br> <br>
@@ -450,6 +460,7 @@
 export default {
   data () {
     return {
+      requiredFieldStatus: false,
       manualTriggerStatus: false,
       scrapeDisplay: false,
       scrapeLinks: {},
@@ -501,24 +512,8 @@ export default {
         { name: 'Body Type', value: 'body_type' },
         { name: 'Color', value: 'color' }
       ],
-      requiredFields: [
-        { name: 'Seller Type', value: 'seller_type' },
-        { name: 'Model Year', value: 'model_year' },
-        { name: 'Make', value: 'make' },
-        { name: 'Model', value: 'model' },
-        { name: 'Variant', value: 'variant' },
-        { name: 'Fuel Type', value: 'fuel_type' },
-        { name: 'Engine Size', value: 'engine_size' },
-        { name: 'Transmission', value: 'transmission' },
-        { name: 'Mileage', value: 'mileage' },
-        { name: 'Price', value: 'price' },
-        { name: 'Location', value: 'location' },
-        { name: 'Seller', value: 'seller' },
-        { name: 'Body Type', value: 'body_type' },
-        { name: 'Contact Number', value: 'contact_number' },
-        { name: 'Color', value: 'color' }
-      ],
-      selectedRequiredFields: null,
+      requiredFields: [],
+      selectedRequiredFields: [],
       checked: []
     }
   },
@@ -614,7 +609,55 @@ export default {
         })
         .then(this.manualTriggerStatus = false)
         .catch(console.error)
+    },
+    editRequiredFields (inputFields) {
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      headers.append('Accept', 'application/json')
+      headers.append('Authorization', 'Bearer ' + this.getToken())
+
+      const fieldList = []
+      for (var field in inputFields) {
+        fieldList.push(inputFields[field].name)
+      }
+
+      const jsonBody = {
+        type: 'reject_if_null',
+        status: true,
+        list_of_fields: fieldList
+      }
+
+      return fetch('http://127.0.0.1:8000/columns', {
+        method: 'PUT',
+        responseType: 'json',
+        headers: headers,
+        body: JSON.stringify(jsonBody)
+      })
+        .then(res => {
+          this.requiredFieldStatus = true
+          console.log('here')
+        })
+        .then(this.requiredFieldStatus = false)
+        .catch(console.error)
     }
+  },
+  mounted () {
+    const headers = new Headers()
+    headers.append('Content-Type', 'application/json')
+    headers.append('Accept', 'application/json')
+    headers.append('Authorization', 'Bearer ' + this.getToken())
+
+    fetch('http://127.0.0.1:8000/columns?type=reject_if_null', {
+      method: 'GET',
+      responseType: 'json',
+      headers: headers
+    })
+      .then(response => response.json())
+      .then(data => {
+        for (var item in data.items) {
+          this.requiredFields.push(data.items[item])
+        }
+      })
   }
 }
 </script>

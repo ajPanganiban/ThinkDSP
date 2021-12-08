@@ -238,10 +238,20 @@
                     </template>
                     <template #footer>
                       <div style="text-align: right">
-                        <Button label="Save Settings"
+                        <Button
+                          @click.prevent="editRange()"
+                          label="Save Settings"
                           class="p-button-secondary"
                           style="width:30%"/>
                       </div>
+                      <Message
+                        v-if="rangeStatus"
+                        severity="success"
+                        :life="5000"
+                        :sticky="false
+                      ">
+                        Settings successfully saved.
+                      </Message>
                     </template>
                   </Card>
                   <br> <br>
@@ -439,10 +449,20 @@
                     </template>
                     <template #footer>
                       <div style="text-align: right">
-                        <Button label="Save Settings"
+                        <Button
+                          @click.prevent="editConfigs()"
+                          label="Save Settings"
                           class="p-button-secondary"
                           style="width:30%"/>
                       </div>
+                      <Message
+                        v-if="configStatus"
+                        severity="success"
+                        :life="5000"
+                        :sticky="false
+                      ">
+                        Settings successfully saved.
+                      </Message>
                     </template>
                   </Card>
                 </div>
@@ -460,6 +480,8 @@
 export default {
   data () {
     return {
+      rangeStatus: false,
+      configStatus: false,
       requiredFieldStatus: false,
       manualTriggerStatus: false,
       scrapeDisplay: false,
@@ -639,6 +661,12 @@ export default {
         })
         .then(this.requiredFieldStatus = false)
         .catch(console.error)
+    },
+    editRange () {
+      this.rangeStatus = true
+    },
+    editConfigs () {
+      this.configStatus = true
     }
   },
   mounted () {

@@ -17,6 +17,9 @@ import Checkbox from 'primevue/checkbox'
 import Fieldset from 'primevue/fieldset'
 import Accordion from 'primevue/accordion'
 import AccordionTab from 'primevue/accordiontab'
+import Dialog from 'primevue/dialog'
+import Message from 'primevue/message'
+import FileUpload from 'primevue/fileupload'
 
 import 'primevue/resources/themes/saga-blue/theme.css'
 import 'primevue/resources/primevue.min.css'
@@ -26,8 +29,8 @@ const app = createApp(App)
 
 app.config.productionTip = false
 app.use(router)
-
 app.use(PrimeVue)
+
 app.component('Card', Card)
 app.component('Button', Button)
 app.component('Calendar', Calendar)
@@ -42,5 +45,8 @@ app.component('Checkbox', Checkbox)
 app.component('Fieldset', Fieldset)
 app.component('Accordion', Accordion)
 app.component('AccordionTab', AccordionTab)
+app.component('Dialog', Dialog)
+app.component('Message', Message)
+app.component('FileUpload', FileUpload)
 
 app.mount('#app')

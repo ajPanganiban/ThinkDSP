@@ -1,5 +1,12 @@
 <template>
-  <Button @click="getToken()" />
+  <Dialog header="Scraped Files" v-model:visible="scrapeDisplay" >
+    <ul id="example-1">
+      <li v-for="(item, key, index) in scrapeLinks" :key="index">
+        <b>{{key}}:</b> <br>
+        <a :href="item">{{item}}</a>
+      </li>
+    </ul>
+  </Dialog>
   <Fieldset>
     <template #legend>
       Download Data
@@ -35,11 +42,21 @@
               Scraped Listings
             </template>
             <template #content>
-                Date &nbsp; <Calendar v-model="value"/> <br> <br>
-                Websites &nbsp;&nbsp;&nbsp;&nbsp; <MultiSelect v-model="selectedSites" :options="sites" optionLabel="name" placeholder="Select Sites" />
+                Date &nbsp; <Calendar v-model="scraped_date"/> <br> <br>
+                Websites &nbsp;&nbsp;&nbsp;&nbsp;
+                <MultiSelect
+                  v-model="selectedSites"
+                  :options="sites"
+                  optionLabel="name"
+                  placeholder="Select Sites"
+                />
             </template>
             <template #footer>
-                <Button icon="pi pi-download" label="Download" /> &nbsp;&nbsp;&nbsp;&nbsp;
+                <Button
+                  @click.prevent="downloadScraped(this.selectedSites, this.scraped_date)"
+                  icon="pi pi-download"
+                  label="Generate Files"
+                />
             </template>
           </Card>
         </div>
@@ -77,14 +94,27 @@
                 </template>
                 <template #content>
                     Websites &nbsp;&nbsp;&nbsp;&nbsp;
-                    <MultiSelect v-model="selectedSites"
+                    <MultiSelect v-model="triggerSites"
                       :options="sites"
                       optionLabel="name"
                       placeholder="Select Sites" />
                 </template>
                 <template #footer>
                     <div style="text-align: right">
-                      <Button label="Scrape Now" class="p-button-secondary" style="width:100%" />
+                      <Button
+                        @click.prevent="handleTrigger(this.triggerSites)"
+                        label="Scrape Now"
+                        class="p-button-secondary"
+                        style="width:100%"
+                      />
+                      <Message
+                        v-if="manualTriggerStatus"
+                        severity="success"
+                        :life="5000"
+                        :sticky="false
+                      ">
+                        Scraper successfully triggered.
+                      </Message>
                     </div>
                 </template>
               </Card>
@@ -126,20 +156,32 @@
             </p>
           </template>
           <template #footer>
-            <div style="text-align:center">
-              <Button
-                @click.prevent="downloadData(
-                  'masterfile?file=True',
-                  'cleaner_reference'
-                )"
-                icon="pi pi-download"
-                label="Download"
-                class="p-button-lg"
-                style="width:30%"/>
-              <Button icon="pi pi-upload"
-                label="Upload"
-                class="p-button-success p-button-lg"
-                style="width:30%;margin-left:50px"/>
+            <div id="outer">
+              <div class="inner">
+                <Button
+                  @click.prevent="downloadData(
+                    'masterfile?file=True',
+                    'cleaner_reference'
+                  )"
+                  icon="pi pi-download"
+                  label="Download"
+                  class="p-button-lg"
+                  style="width:150%"
+                />
+              </div>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <span style="display:inline-block">
+                <FileUpload
+                  mode="basic"
+                  name="demo[]"
+                  url="./upload"
+                  icon="pi pi-upload"
+                  chooseLabel="Upload"
+                  class="p-button-success p-button-lg"
+                  style="width:150%"
+                />
+              </span>
             </div>
           </template>
         </Card>
@@ -408,16 +450,20 @@
 export default {
   data () {
     return {
+      manualTriggerStatus: false,
+      scrapeDisplay: false,
+      scrapeLinks: {},
       value: null,
+      scraped_date: null,
       selectedSites: null,
+      triggerSites: null,
       sites: [
-        { name: 'Autodeal', value: 'Autodeal' },
-        { name: 'Automart', value: 'Automart' },
-        { name: 'Carguide', value: 'Carguide' },
-        { name: 'Carmudi', value: 'Carmudi' },
-        { name: 'Carousell', value: 'Carousell' },
-        { name: 'Facebook', value: 'Facebook' },
-        { name: 'Philkotse', value: 'Philkotse' }
+        { name: 'Autodeal', value: 'autodeal' },
+        { name: 'Automart', value: 'automart' },
+        { name: 'Carguide', value: 'carguide' },
+        { name: 'Carmudi', value: 'carmudi' },
+        { name: 'Carousell', value: 'carousell' },
+        { name: 'Philkotse', value: 'philkotse' }
       ],
       selectedLogTypes: null,
       logTypes: [
@@ -502,6 +548,71 @@ export default {
 
           fileLink.click()
         })
+        .catch(console.error)
+    },
+    downloadScraped (inputSites, inputDate) {
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      headers.append('Accept', 'application/json')
+      headers.append('Authorization', 'Bearer ' + this.getToken())
+
+      const sites = []
+      for (var key in inputSites) {
+        sites.push(inputSites[key].value)
+      }
+
+      const date = inputDate.getFullYear() +
+        '-' +
+        inputDate.getMonth() +
+        '-' +
+        inputDate.getDate()
+
+      const url = 'http://127.0.0.1:8000/scraped_data' +
+        '?sites=' +
+        sites +
+        '&date=' +
+        date
+
+      return fetch(url, {
+        method: 'GET',
+        responseType: 'json',
+        headers: headers
+      })
+        .then(response => response.json())
+        .then(data => {
+          for (var site in data.sites) {
+            this.scrapeLinks[site] = data.sites[site].replace(/['"]+/g, '')
+            console.log(site, data.sites[site].replace('/"/g', ''))
+          }
+          this.scrapeDisplay = true
+        })
+        .catch(console.error)
+    },
+    handleTrigger (inputSites) {
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      headers.append('Accept', 'application/json')
+      headers.append('Authorization', 'Bearer ' + this.getToken())
+
+      const sites = []
+      for (var key in inputSites) {
+        sites.push(inputSites[key].value)
+      }
+      const jsonBody = { sites: sites }
+
+      return fetch('http://127.0.0.1:8000/scrape', {
+        method: 'POST',
+        responseType: 'json',
+        headers: headers,
+        body: JSON.stringify(jsonBody)
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          this.manualTriggerStatus = true
+          console.log('here')
+        })
+        .then(this.manualTriggerStatus = false)
         .catch(console.error)
     }
   }
@@ -649,6 +760,17 @@ body {
   justify-content: right;
   align-items: right;
   display: flex;
+}
+
+#outer
+{
+    width:100%;
+    text-align: center;
+}
+
+.inner
+{
+    display: inline-block;
 }
 
 /* Responsive columns - one column layout (vertical) on small screens */

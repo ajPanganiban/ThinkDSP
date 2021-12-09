@@ -172,6 +172,14 @@
                         class="p-button-secondary"
                         style="width:100%"
                       />
+                      <Message
+                        v-if="scheduleScrapeStatus"
+                        severity="success"
+                        :life="5000"
+                        :sticky="false
+                      ">
+                        Settings successfully saved.
+                      </Message>
                     </div>
                 </template>
               </Card>
@@ -515,6 +523,7 @@
 export default {
   data () {
     return {
+      scheduleScrapeStatus: false,
       logDisabled: true,
       latestStats: {},
       latestRunDate: '',
@@ -716,7 +725,39 @@ export default {
       this.configStatus = true
     },
     scheduleScrape (inputFrequency) {
-      console.log(inputFrequency)
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      headers.append('Accept', 'application/json')
+      headers.append('Authorization', 'Bearer ' + this.getToken())
+
+      let param = ''
+      let paramKey = ''
+      if (inputFrequency === 'weekly') {
+        paramKey = 'day_per_week'
+        param = this.selectedFrequencyDays.value
+      } else {
+        paramKey = 'date_per_month'
+        param = this.scrapeScheduleDate
+      }
+
+      const jsonBody = {
+        format: inputFrequency
+      }
+      jsonBody[paramKey] = param
+
+      return fetch('http://127.0.0.1:8000/scrape_scheduler', {
+        method: 'PUT',
+        responseType: 'json',
+        headers: headers,
+        body: JSON.stringify(jsonBody)
+      })
+        .then(response => response.json())
+        .then(data => {
+          this.scheduleScrapeStatus = true
+          console.log(data)
+        })
+        .then(this.scheduleScrapeStatus = false)
+        .catch(console.error)
     }
   },
   mounted () {

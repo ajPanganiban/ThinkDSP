@@ -265,24 +265,32 @@
                     <template #content>
                       <big><b> Set Valid Range: </b></big>
                       <div style="text-align:center">
-                        <b> Minimum </b>  &emsp;&emsp;&emsp;&emsp;&emsp; &emsp;&emsp;&emsp;
+                        <b> Minimum </b>  &emsp;&emsp;&emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;
                         <b> Maximum </b> <br> <br>
-                        <b> Mileage: </b> &emsp;
+                        <b> Mileage: </b> &emsp;&emsp;&nbsp;&nbsp;
                         <InputNumber v-model="minMileage" suffix=" km" /> &emsp;
                         <InputNumber v-model="maxMileage" suffix=" km" /> <br> <br>
-                        <b> Price: </b> &emsp;&emsp;&nbsp;
+                        <b> Price: </b> &emsp;&emsp;&nbsp;&emsp;&nbsp;&nbsp;
                         <InputNumber v-model="minPrice" suffix=" Php" /> &emsp;
                         <InputNumber v-model="maxPrice" suffix=" Php" /> <br> <br>
-                        <b> Engine Size: </b>
-                        <InputNumber v-model="minPrice"/> &emsp;
-                        <InputNumber v-model="maxPrice"/>
+                        <b> Engine Size: </b> &emsp;
+                        <InputNumber v-model="minEngineSize"/> &emsp;
+                        <InputNumber v-model="maxEngineSize"/>
                         <br>
                       </div>
                     </template>
                     <template #footer>
+                      <i>Zero values indicate no max/min specified.</i>
                       <div style="text-align: right">
                         <Button
-                          @click.prevent="editRange()"
+                          @click.prevent="editRange([
+                            this.minEngineSize,
+                            this.maxEngineSize,
+                            this.minMileage,
+                            this.maxMileage,
+                            this.minPrice,
+                            this.maxPrice
+                          ])"
                           label="Save Settings"
                           class="p-button-secondary"
                           style="width:30%"/>
@@ -571,6 +579,8 @@ export default {
       maxMileage: 0,
       minPrice: 0,
       maxPrice: 0,
+      minEngineSize: 0,
+      maxEngineSize: 0,
       allFields: [
         { name: 'Seller Type', value: 'seller_type' },
         { name: 'Date Posted', value: 'date_posted' },
@@ -596,7 +606,6 @@ export default {
   },
   methods: {
     getToken () {
-      console.log(localStorage.getItem('token'))
       return localStorage.getItem('token')
     },
     downloadData (prefix, filename) {
@@ -705,21 +714,96 @@ export default {
         list_of_fields: fieldList
       }
 
-      return fetch('http://127.0.0.1:8000/columns', {
+      const notRequired = []
+      const notRequiredFields = this.requiredFields.filter(
+        f => !this.selectedRequiredFields.includes(f)
+      )
+      for (var f in notRequiredFields) {
+        notRequired.push(notRequiredFields[f].name)
+      }
+
+      const jsonBody2 = {
+        type: 'reject_if_null',
+        status: false,
+        list_of_fields: notRequired
+      }
+
+      fetch('http://127.0.0.1:8000/columns', {
         method: 'PUT',
         responseType: 'json',
         headers: headers,
         body: JSON.stringify(jsonBody)
       })
         .then(res => {
-          this.requiredFieldStatus = true
-          console.log('here')
+          fetch('http://127.0.0.1:8000/columns', {
+            method: 'PUT',
+            responseType: 'json',
+            headers: headers,
+            body: JSON.stringify(jsonBody2)
+          })
+            .then(res => {
+              this.requiredFieldStatus = true
+            })
+            .then(this.requiredFieldStatus = false)
+            .catch(console.error)
         })
         .then(this.requiredFieldStatus = false)
         .catch(console.error)
     },
-    editRange () {
-      this.rangeStatus = true
+    editRange (inputValues) {
+      // input values: minEngine maxEngine minMileage maxMileage minPrice maxPrice
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      headers.append('Accept', 'application/json')
+      headers.append('Authorization', 'Bearer ' + this.getToken())
+
+      for (var value in inputValues) {
+        if (inputValues[value] === 0) {
+          inputValues[value] = null
+        }
+      }
+
+      const engineJsonBody = {
+        type: 'col_range',
+        min: inputValues[0],
+        max: inputValues[1]
+      }
+      const mileageJsonBody = {
+        type: 'col_range',
+        min: inputValues[2],
+        max: inputValues[3]
+      }
+      const priceJsonBody = {
+        type: 'col_range',
+        min: inputValues[4],
+        max: inputValues[5]
+      }
+
+      fetch('http://127.0.0.1:8000/columns/engine_size', {
+        method: 'PUT',
+        responseType: 'json',
+        headers: headers,
+        body: JSON.stringify(engineJsonBody)
+      })
+        .then(
+          fetch('http://127.0.0.1:8000/columns/mileage', {
+            method: 'PUT',
+            responseType: 'json',
+            headers: headers,
+            body: JSON.stringify(mileageJsonBody)
+          })
+        )
+        .then(
+          fetch('http://127.0.0.1:8000/columns/price', {
+            method: 'PUT',
+            responseType: 'json',
+            headers: headers,
+            body: JSON.stringify(priceJsonBody)
+          })
+            .then(res => { this.rangeStatus = true })
+        )
+        .then(this.rangeStatus = false)
+        .catch(console.error)
     },
     editConfigs () {
       this.configStatus = true
@@ -789,6 +873,54 @@ export default {
       .then(data => {
         for (var item in data.items) {
           this.requiredFields.push(data.items[item])
+          if (data.items[item].status) {
+            this.selectedRequiredFields.push(data.items[item])
+          }
+        }
+      })
+
+    fetch('http://127.0.0.1:8000/columns?type=col_range', {
+      method: 'GET',
+      responseType: 'json',
+      headers: headers
+    })
+      .then(response => response.json())
+      .then(data => {
+        for (var item in data.items) {
+          if (data.items[item].name === 'engine_size') {
+            if (data.items[item].max) {
+              this.maxEngineSize = data.items[item].max
+            } else {
+              this.maxEngineSize = 0
+            }
+            if (data.items[item].min) {
+              this.minEngineSize = data.items[item].min
+            } else {
+              this.minEngineSize = 0
+            }
+          } else if (data.items[item].name === 'price') {
+            if (data.items[item].max) {
+              this.maxPrice = data.items[item].max
+            } else {
+              this.maxPrice = 0
+            }
+            if (data.items[item].min) {
+              this.minPrice = data.items[item].min
+            } else {
+              this.minPrice = 0
+            }
+          } else {
+            if (data.items[item].max) {
+              this.maxMileage = data.items[item].max
+            } else {
+              this.maxMileage = 0
+            }
+            if (data.items[item].min) {
+              this.minMileage = data.items[item].min
+            } else {
+              this.minMileage = 0
+            }
+          }
         }
       })
   }

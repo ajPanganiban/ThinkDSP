@@ -573,6 +573,7 @@ export default {
       headers.append('Accept', 'application/json')
       headers.append('Authorization', 'Bearer ' + this.getToken())
 
+      const month = inputDate.getMonth() + 1
       const sites = []
       for (var key in inputSites) {
         sites.push(inputSites[key].value)
@@ -580,7 +581,7 @@ export default {
 
       const date = inputDate.getFullYear() +
         '-' +
-        inputDate.getMonth() +
+        month +
         '-' +
         inputDate.getDate()
 

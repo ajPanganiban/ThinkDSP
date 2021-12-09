@@ -308,212 +308,53 @@
                   <br> <br>
                   <Card style="text-align:justify">
                     <template #content>
-                      <big><b> Field Options: </b></big>
+                      <big><b> Other Options: </b></big>
                       <br> <br>
-                      <table style="width:100%">
-                        <tr>
-                          <th></th>
-                          <th style="text-align:right">Approximate Correct Value</th>
-                          <th style="text-align:center">Turn Invalid Values to Null</th>
-                        </tr>
-                        <br> <br>
-                        <tr>
-                          <td style="text-align:right">
-                            Seller Type
-                          </td>
-                          <td style="text-align:right">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                          <td style="text-align:center">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                        </tr>
+                      <b> Approximate Values for: </b> &emsp;
+                        <Listbox v-model="selectedApproximateFields"
+                          :options="approximateFields"
+                          optionLabel="name"
+                          :multiple="this.boolTrue"
+                          placeholder="Select Fields" />
                         <br>
-                        <tr>
-                          <td style="text-align:right">
-                            Model Year
-                          </td>
-                          <td style="text-align:right">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                          <td style="text-align:center">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                        </tr>
+                        <div style="text-align: right">
+                          <Button
+                            @click.prevent="editApproxConfigs(this.selectedApproximateFields)"
+                            label="Save Settings"
+                            class="p-button-secondary"
+                            style="width:30%"/>
+                        </div>
+                        <Message
+                          v-if="configStatus1"
+                          severity="success"
+                          :life="5000"
+                          :sticky="false
+                        ">
+                          Settings successfully saved.
+                        </Message>
+                      <br> <br>
+                      <b> Turn Invalid Values to Null for: </b> &emsp;
+                        <Listbox v-model="selectedNullConvertedFields"
+                          :options="nullConvertedFields"
+                          optionLabel="name"
+                          :multiple="this.boolTrue"
+                          placeholder="Select Fields" />
                         <br>
-                        <tr>
-                          <td style="text-align:right">
-                            Make
-                          </td>
-                          <td style="text-align:right">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                          <td style="text-align:center">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                        </tr>
-                        <br>
-                        <tr>
-                          <td style="text-align:right">
-                            Model
-                          </td>
-                          <td style="text-align:right">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                          <td style="text-align:center">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                        </tr>
-                        <br>
-                        <tr>
-                          <td style="text-align:right">
-                            Variant
-                          </td>
-                          <td style="text-align:right">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                          <td style="text-align:center">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                        </tr>
-                        <br>
-                        <tr>
-                          <td style="text-align:right">
-                            Fuel Type
-                          </td>
-                          <td style="text-align:right">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                          <td style="text-align:center">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                        </tr>
-                        <br>
-                        <tr>
-                          <td style="text-align:right">
-                            Engine Size
-                          </td>
-                          <td style="text-align:right">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                          <td style="text-align:center">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                        </tr>
-                        <br>
-                        <tr>
-                          <td style="text-align:right">
-                            Transmission
-                          </td>
-                          <td style="text-align:right">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                          <td style="text-align:center">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                        </tr>
-                        <br>
-                        <tr>
-                          <td style="text-align:right">
-                            Mileage
-                          </td>
-                          <td style="text-align:right">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                          <td style="text-align:center">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                        </tr>
-                        <br>
-                        <tr>
-                          <td style="text-align:right">
-                            Mileage Range
-                          </td>
-                          <td style="text-align:right">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                          <td style="text-align:center">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                        </tr>
-                        <br>
-                        <tr>
-                          <td style="text-align:right">
-                            Price
-                          </td>
-                          <td style="text-align:right">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                          <td style="text-align:center">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                        </tr>
-                        <br>
-                        <tr>
-                          <td style="text-align:right">
-                            Location
-                          </td>
-                          <td style="text-align:right">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                          <td style="text-align:center">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                        </tr>
-                        <br>
-                        <tr>
-                          <td style="text-align:right">
-                            Seller
-                          </td>
-                          <td style="text-align:right">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                          <td style="text-align:center">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                        </tr>
-                        <br>
-                        <tr>
-                          <td style="text-align:right">
-                            Body Type
-                          </td>
-                          <td style="text-align:right">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                          <td style="text-align:center">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                        </tr>
-                        <br>
-                        <tr>
-                          <td style="text-align:right">
-                            Color
-                          </td>
-                          <td style="text-align:right">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                          <td style="text-align:center">
-                            <Checkbox v-model="checked" :binary="true" />
-                          </td>
-                        </tr>
-                      </table>
-                    </template>
-                    <template #footer>
-                      <div style="text-align: right">
-                        <Button
-                          @click.prevent="editConfigs()"
-                          label="Save Settings"
-                          class="p-button-secondary"
-                          style="width:30%"/>
-                      </div>
-                      <Message
-                        v-if="configStatus"
-                        severity="success"
-                        :life="5000"
-                        :sticky="false
-                      ">
-                        Settings successfully saved.
-                      </Message>
+                        <div style="text-align: right">
+                          <Button
+                            @click.prevent="editNullConfigs(this.selectedNullConvertedFields)"
+                            label="Save Settings"
+                            class="p-button-secondary"
+                            style="width:30%"/>
+                        </div>
+                        <Message
+                          v-if="configStatus2"
+                          severity="success"
+                          :life="5000"
+                          :sticky="false
+                        ">
+                          Settings successfully saved.
+                        </Message>
                     </template>
                   </Card>
                 </div>
@@ -531,6 +372,9 @@
 export default {
   data () {
     return {
+      configStatus1: false,
+      configStatus2: false,
+      boolTrue: true,
       scheduleScrapeStatus: false,
       logDisabled: true,
       latestStats: {},
@@ -601,6 +445,10 @@ export default {
       ],
       requiredFields: [],
       selectedRequiredFields: [],
+      approximateFields: [],
+      selectedApproximateFields: [],
+      nullConvertedFields: [],
+      selectedNullConvertedFields: [],
       checked: []
     }
   },
@@ -805,8 +653,115 @@ export default {
         .then(this.rangeStatus = false)
         .catch(console.error)
     },
-    editConfigs () {
-      this.configStatus = true
+    editApproxConfigs (inputFields) {
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      headers.append('Accept', 'application/json')
+      headers.append('Authorization', 'Bearer ' + this.getToken())
+
+      const fieldList = []
+      for (var field in inputFields) {
+        fieldList.push(inputFields[field].name)
+      }
+
+      const jsonBody = {
+        type: 'infer_from_make_or_desc',
+        status: true,
+        list_of_fields: fieldList
+      }
+
+      const notRequired = []
+      const notRequiredFields = this.approximateFields.filter(
+        f => !this.selectedApproximateFields.includes(f)
+      )
+      for (var f in notRequiredFields) {
+        notRequired.push(notRequiredFields[f].name)
+      }
+      console.log(fieldList)
+      console.log(notRequired)
+
+      const jsonBody2 = {
+        type: 'infer_from_make_or_desc',
+        status: false,
+        list_of_fields: notRequired
+      }
+
+      fetch('http://127.0.0.1:8000/columns', {
+        method: 'PUT',
+        responseType: 'json',
+        headers: headers,
+        body: JSON.stringify(jsonBody)
+      })
+        .then(res => {
+          fetch('http://127.0.0.1:8000/columns', {
+            method: 'PUT',
+            responseType: 'json',
+            headers: headers,
+            body: JSON.stringify(jsonBody2)
+          })
+            .then(res => res.json())
+            .then(data => {
+              console.log(data)
+              this.configStatus1 = true
+            })
+        })
+        .then(this.configStatus1 = false)
+        .catch(console.error)
+    },
+    editNullConfigs (inputFields) {
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      headers.append('Accept', 'application/json')
+      headers.append('Authorization', 'Bearer ' + this.getToken())
+
+      const fieldList = []
+      for (var field in inputFields) {
+        fieldList.push(inputFields[field].name)
+      }
+
+      const jsonBody = {
+        type: 'convert_to_null_if_invalid',
+        status: true,
+        list_of_fields: fieldList
+      }
+
+      const notRequired = []
+      const notRequiredFields = this.nullConvertedFields.filter(
+        f => !this.selectedNullConvertedFields.includes(f)
+      )
+      for (var f in notRequiredFields) {
+        notRequired.push(notRequiredFields[f].name)
+      }
+      console.log(fieldList)
+      console.log(notRequired)
+
+      const jsonBody2 = {
+        type: 'convert_to_null_if_invalid',
+        status: false,
+        list_of_fields: notRequired
+      }
+
+      fetch('http://127.0.0.1:8000/columns', {
+        method: 'PUT',
+        responseType: 'json',
+        headers: headers,
+        body: JSON.stringify(jsonBody)
+      })
+        .then(res => {
+          fetch('http://127.0.0.1:8000/columns', {
+            method: 'PUT',
+            responseType: 'json',
+            headers: headers,
+            body: JSON.stringify(jsonBody2)
+          })
+            .then(res => res.json())
+            .then(data => {
+              console.log(data)
+              this.configStatus2 = true
+            })
+        })
+        .then(this.configStatus2 = false)
+        .catch(console.error)
     },
     scheduleScrape (inputFrequency) {
       const headers = new Headers()
@@ -875,6 +830,36 @@ export default {
           this.requiredFields.push(data.items[item])
           if (data.items[item].status) {
             this.selectedRequiredFields.push(data.items[item])
+          }
+        }
+      })
+
+    fetch('http://127.0.0.1:8000/columns?type=infer_from_make_or_desc', {
+      method: 'GET',
+      responseType: 'json',
+      headers: headers
+    })
+      .then(response => response.json())
+      .then(data => {
+        for (var item in data.items) {
+          this.approximateFields.push(data.items[item])
+          if (data.items[item].status) {
+            this.selectedApproximateFields.push(data.items[item])
+          }
+        }
+      })
+
+    fetch('http://127.0.0.1:8000/columns?type=convert_to_null_if_invalid', {
+      method: 'GET',
+      responseType: 'json',
+      headers: headers
+    })
+      .then(response => response.json())
+      .then(data => {
+        for (var item in data.items) {
+          this.nullConvertedFields.push(data.items[item])
+          if (data.items[item].status) {
+            this.selectedNullConvertedFields.push(data.items[item])
           }
         }
       })

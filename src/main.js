@@ -20,6 +20,7 @@ import AccordionTab from 'primevue/accordiontab'
 import Dialog from 'primevue/dialog'
 import Message from 'primevue/message'
 import FileUpload from 'primevue/fileupload'
+import Listbox from 'primevue/listbox'
 
 import 'primevue/resources/themes/saga-blue/theme.css'
 import 'primevue/resources/primevue.min.css'
@@ -48,5 +49,6 @@ app.component('AccordionTab', AccordionTab)
 app.component('Dialog', Dialog)
 app.component('Message', Message)
 app.component('FileUpload', FileUpload)
+app.component('Listbox', Listbox)
 
 app.mount('#app')

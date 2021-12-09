@@ -215,6 +215,7 @@
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <span style="display:inline-block">
                 <FileUpload
+                  :disabled=true
                   mode="basic"
                   name="demo[]"
                   url="http://127.0.0.1:8000/masterfile?file=true"

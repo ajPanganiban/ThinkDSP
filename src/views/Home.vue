@@ -1,6 +1,6 @@
 <template>
   <Dialog header="Scraped Files" v-model:visible="scrapeDisplay" >
-    <ul id="example-1">
+    <ul>
       <li v-for="(item, key, index) in scrapeLinks" :key="index">
         <b>{{key}}:</b> <br>
         <a :href="item">{{item}}</a>
@@ -11,71 +11,81 @@
     <template #legend>
       Download Data
     </template>
-    <div class="row">
-      <div class="column">
-        <div class="card">
-          <Card style="text-align:justify">
-            <template #title>
-                Cleaned Listings
-              </template>
-            <template #content>
-                <b>Last Scraped Date: November 1, 2021</b>
-                <br> <br>
-                Accepted Listings: <br>
-                Automart: 20/40 listings (50%) <br>
-                Facebook: 20/60 listings (33%) <br>
-                <b>Overall: 40/100  (40%) </b>
-            </template>
-            <template #footer>
-                <Button
-                  @click.prevent="downloadData('latest_data', 'latest_data')"
-                  icon="pi pi-download"
-                  label="Download All Data" />
-            </template>
-          </Card>
-        </div>
-      </div>
-      <div class="column">
-        <div class="card">
-          <Card style="text-align:justify">
-            <template #title>
-              Scraped Listings
-            </template>
-            <template #content>
-                Date &nbsp; <Calendar v-model="scraped_date"/> <br> <br>
-                Websites &nbsp;&nbsp;&nbsp;&nbsp;
-                <MultiSelect
-                  v-model="selectedSites"
-                  :options="sites"
-                  optionLabel="name"
-                  placeholder="Select Sites"
-                />
-            </template>
-            <template #footer>
-                <Button
-                  @click.prevent="downloadScraped(this.selectedSites, this.scraped_date)"
-                  icon="pi pi-download"
-                  label="Generate Files"
-                />
-            </template>
-          </Card>
-        </div>
-      </div>
-      <div class="column">
-        <div class="card">
-          <Card style="text-align:justify">
-            <template #title>
-              Process Logs
-            </template>
-            <template #content>
-                Scrape Date &nbsp; <Calendar v-model="value"/> <br> <br>
-            </template>
-            <template #footer>
-                <Button icon="pi pi-download" label="Download" />
-            </template>
-          </Card>
-        </div>
-      </div>
+    <div class="card">
+      <Card style="text-align:justify;padding:20px 20px 50px">
+        <template #title>
+            Cleaned Listings
+          </template>
+        <template #content>
+            <b>Last Scrape Date: {{this.latestRunDate}}</b>
+            <br> <br>
+            <i>Accepted Listings From The Last Scrape:</i><br>
+            <li
+              v-for="(value, key, index) in latestStats"
+              :key="index"
+              style="list-style-type:none"
+            >
+              {{key}}: {{value.valid}}/{{value.total}} listings ({{value.clean_percentage}}%)
+            </li>
+        </template>
+        <template #footer>
+            <Button
+              @click.prevent="downloadData(
+                'latest_data',
+                'used_car_listings-cleaned-' +
+                this.latestRunDate
+              )"
+              icon="pi pi-download"
+              label="Download All Listings"
+              style="position:absolute;right:50px"
+            />
+        </template>
+      </Card>
+    </div>
+    <br>
+    <div class="card">
+      <Card style="text-align:justify;padding:20px 20px 50px">
+        <template #title>
+          Scraped Listings
+        </template>
+        <template #content>
+            Date &nbsp; <Calendar v-model="scraped_date"/> <br> <br>
+            Websites &nbsp;&nbsp;&nbsp;&nbsp;
+            <MultiSelect
+              v-model="selectedSites"
+              :options="sites"
+              optionLabel="name"
+              placeholder="Select Sites"
+            />
+        </template>
+        <template #footer>
+            <Button
+              @click.prevent="downloadScraped(this.selectedSites, this.scraped_date)"
+              icon="pi pi-download"
+              label="Generate Files"
+              style="position:absolute;right:50px"
+            />
+        </template>
+      </Card>
+    </div>
+    <br>
+    <div class="card">
+      <Card style="text-align:justify;padding:20px 20px 50px">
+        <template #title>
+          Process Logs
+        </template>
+        <template #content>
+            Scrape Date &nbsp; <Calendar v-model="value"/> <br> <br>
+        </template>
+        <template #footer>
+            <Button
+              :disabled="this.logDisabled"
+              icon="pi pi-download"
+              label="Download"
+              style="position:absolute;right:50px"
+            />
+        </template>
+      </Card>
     </div>
   </Fieldset>
   <br>
@@ -114,6 +124,7 @@
                         :sticky="false
                       ">
                         Scraper successfully triggered.
+                        Please wait for 2 hours for the it to finish.
                       </Message>
                     </div>
                 </template>
@@ -127,18 +138,40 @@
                   Schedule Scraping Activity
                 </template>
                 <template #content>
-                    Scrape every
-                    <InputNumber v-model="frequency"/>
+                    Scrape
                     <Dropdown v-model="selectedFrequencyTypes"
                       :options="frequencyTypes"
                       optionLabel="name"
-                      placeholder="Days" />
+                      placeholder="Select Frequency" />
+                    <br> <br>
+                    <div v-if="selectedFrequencyTypes">
+                      <div v-if="selectedFrequencyTypes.name=='monthly'">
+                        Select Date:
+                        <InputNumber
+                          v-model="scrapeScheduleDate"
+                          max="31"
+                          min="1"
+                          placeholder="(1-31)"
+                        />
+                      </div>
+                      <div v-if="selectedFrequencyTypes.name=='weekly'">
+                        Select Day:
+                        <Dropdown v-model="selectedFrequencyDays"
+                          :options="frequencyDays"
+                          optionLabel="name"
+                          placeholder="(Mon-Sun)"
+                        />
+                      </div>
+                    </div>
                 </template>
                 <template #footer>
                     <div style="text-align: right">
-                      <Button label="Save Settings"
+                      <Button
+                        @click.prevent="scheduleScrape(this.selectedFrequencyTypes.name)"
+                        label="Save Settings"
                         class="p-button-secondary"
-                        style="width:100%"/>
+                        style="width:100%"
+                      />
                     </div>
                 </template>
               </Card>
@@ -161,7 +194,8 @@
                 <Button
                   @click.prevent="downloadData(
                     'masterfile?file=True',
-                    'cleaner_reference'
+                    'used_car_listings-reference-' +
+                    this.latestRunDate
                   )"
                   icon="pi pi-download"
                   label="Download"
@@ -175,7 +209,8 @@
                 <FileUpload
                   mode="basic"
                   name="demo[]"
-                  url="./upload"
+                  url="http://127.0.0.1:8000/masterfile?file=true"
+                  :auto="true"
                   icon="pi pi-upload"
                   chooseLabel="Upload"
                   class="p-button-success p-button-lg"
@@ -480,6 +515,9 @@
 export default {
   data () {
     return {
+      logDisabled: true,
+      latestStats: {},
+      latestRunDate: '',
       rangeStatus: false,
       configStatus: false,
       requiredFieldStatus: false,
@@ -507,10 +545,18 @@ export default {
       frequency: 0,
       selectedFrequencyTypes: null,
       frequencyTypes: [
-        { name: 'Hours', value: 'Hours' },
-        { name: 'Days', value: 'Days' },
-        { name: 'Weeks', value: 'Weeks' },
-        { name: 'Months', value: 'Months' }
+        { name: 'weekly', value: 'weekly' },
+        { name: 'monthly', value: 'monthly' }
+      ],
+      selectedFrequencyDays: null,
+      frequencyDays: [
+        { name: 'Monday', value: 'Mon' },
+        { name: 'Tuesday', value: 'Tue' },
+        { name: 'Wednesday', value: 'Wed' },
+        { name: 'Thursday', value: 'Thu' },
+        { name: 'Friday', value: 'Fri' },
+        { name: 'Saturday', value: 'Sat' },
+        { name: 'Sunday', value: 'Sun' }
       ],
       minMileage: 0,
       maxMileage: 0,
@@ -668,6 +714,9 @@ export default {
     },
     editConfigs () {
       this.configStatus = true
+    },
+    scheduleScrape (inputFrequency) {
+      console.log(inputFrequency)
     }
   },
   mounted () {
@@ -675,6 +724,20 @@ export default {
     headers.append('Content-Type', 'application/json')
     headers.append('Accept', 'application/json')
     headers.append('Authorization', 'Bearer ' + this.getToken())
+
+    fetch('http://127.0.0.1:8000/latest_stats', {
+      method: 'GET',
+      responseType: 'json',
+      headers: headers
+    })
+      .then(response => response.json())
+      .then(data => {
+        this.latestRunDate = data.datetime_exported
+        const stats = data
+        delete stats.batch_number
+        delete stats.datetime_exported
+        this.latestStats = stats
+      })
 
     fetch('http://127.0.0.1:8000/columns?type=reject_if_null', {
       method: 'GET',

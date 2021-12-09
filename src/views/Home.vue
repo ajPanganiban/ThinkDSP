@@ -218,7 +218,7 @@
                   :disabled=true
                   mode="basic"
                   name="demo[]"
-                  url="http://127.0.0.1:8000/masterfile?file=true"
+                  url="https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/masterfile?file=true"
                   :auto="true"
                   icon="pi pi-upload"
                   chooseLabel="Upload"
@@ -462,7 +462,7 @@ export default {
       headers.append('Content-Type', 'application/json')
       headers.append('Accept', 'application/json')
       headers.append('Authorization', 'Bearer ' + this.getToken())
-      return fetch('http://127.0.0.1:8000/' + prefix, {
+      return fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/' + prefix, {
         method: 'GET',
         responseType: 'blob',
         headers: headers
@@ -498,7 +498,7 @@ export default {
         '-' +
         inputDate.getDate()
 
-      const url = 'http://127.0.0.1:8000/scraped_data' +
+      const url = 'https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/scraped_data' +
         '?sites=' +
         sites +
         '&date=' +
@@ -531,7 +531,7 @@ export default {
       }
       const jsonBody = { sites: sites }
 
-      return fetch('http://127.0.0.1:8000/scrape', {
+      return fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/scrape', {
         method: 'POST',
         responseType: 'json',
         headers: headers,
@@ -577,14 +577,14 @@ export default {
         list_of_fields: notRequired
       }
 
-      fetch('http://127.0.0.1:8000/columns', {
+      fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/columns', {
         method: 'PUT',
         responseType: 'json',
         headers: headers,
         body: JSON.stringify(jsonBody)
       })
         .then(res => {
-          fetch('http://127.0.0.1:8000/columns', {
+          fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/columns', {
             method: 'PUT',
             responseType: 'json',
             headers: headers,
@@ -628,14 +628,14 @@ export default {
         max: inputValues[5]
       }
 
-      fetch('http://127.0.0.1:8000/columns/engine_size', {
+      fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/columns/engine_size', {
         method: 'PUT',
         responseType: 'json',
         headers: headers,
         body: JSON.stringify(engineJsonBody)
       })
         .then(
-          fetch('http://127.0.0.1:8000/columns/mileage', {
+          fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/columns/mileage', {
             method: 'PUT',
             responseType: 'json',
             headers: headers,
@@ -643,7 +643,7 @@ export default {
           })
         )
         .then(
-          fetch('http://127.0.0.1:8000/columns/price', {
+          fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/columns/price', {
             method: 'PUT',
             responseType: 'json',
             headers: headers,
@@ -687,14 +687,14 @@ export default {
         list_of_fields: notRequired
       }
 
-      fetch('http://127.0.0.1:8000/columns', {
+      fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/columns', {
         method: 'PUT',
         responseType: 'json',
         headers: headers,
         body: JSON.stringify(jsonBody)
       })
         .then(res => {
-          fetch('http://127.0.0.1:8000/columns', {
+          fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/columns', {
             method: 'PUT',
             responseType: 'json',
             headers: headers,
@@ -742,14 +742,14 @@ export default {
         list_of_fields: notRequired
       }
 
-      fetch('http://127.0.0.1:8000/columns', {
+      fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/columns', {
         method: 'PUT',
         responseType: 'json',
         headers: headers,
         body: JSON.stringify(jsonBody)
       })
         .then(res => {
-          fetch('http://127.0.0.1:8000/columns', {
+          fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/columns', {
             method: 'PUT',
             responseType: 'json',
             headers: headers,
@@ -785,7 +785,7 @@ export default {
       }
       jsonBody[paramKey] = param
 
-      return fetch('http://127.0.0.1:8000/scrape_scheduler', {
+      return fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/scrape_scheduler', {
         method: 'PUT',
         responseType: 'json',
         headers: headers,
@@ -806,7 +806,7 @@ export default {
     headers.append('Accept', 'application/json')
     headers.append('Authorization', 'Bearer ' + this.getToken())
 
-    fetch('http://127.0.0.1:8000/latest_stats', {
+    fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/latest_stats', {
       method: 'GET',
       responseType: 'json',
       headers: headers
@@ -820,7 +820,7 @@ export default {
         this.latestStats = stats
       })
 
-    fetch('http://127.0.0.1:8000/columns?type=reject_if_null', {
+    fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/columns?type=reject_if_null', {
       method: 'GET',
       responseType: 'json',
       headers: headers
@@ -835,7 +835,7 @@ export default {
         }
       })
 
-    fetch('http://127.0.0.1:8000/columns?type=infer_from_make_or_desc', {
+    fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/columns?type=infer_from_make_or_desc', {
       method: 'GET',
       responseType: 'json',
       headers: headers
@@ -850,7 +850,7 @@ export default {
         }
       })
 
-    fetch('http://127.0.0.1:8000/columns?type=convert_to_null_if_invalid', {
+    fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/columns?type=convert_to_null_if_invalid', {
       method: 'GET',
       responseType: 'json',
       headers: headers
@@ -865,7 +865,7 @@ export default {
         }
       })
 
-    fetch('http://127.0.0.1:8000/columns?type=col_range', {
+    fetch('https://6r2vsddzt9.execute-api.ap-southeast-1.amazonaws.com/api/columns?type=col_range', {
       method: 'GET',
       responseType: 'json',
       headers: headers

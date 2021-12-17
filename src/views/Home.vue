@@ -529,7 +529,10 @@ export default {
       for (var key in inputSites) {
         sites.push(inputSites[key].value)
       }
-      const jsonBody = { sites: sites }
+      const jsonBody = {
+        sites: sites,
+        email_topic: 'dev'
+      }
 
       return fetch('http://127.0.0.1:8000/scrape', {
         method: 'POST',
